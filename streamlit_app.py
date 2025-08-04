@@ -3,6 +3,9 @@ import requests
 import json
 import time
 import os
+import subprocess
+import threading
+import sys
 from typing import Optional, Dict, Any
 import pandas as pd
 from pathlib import Path
@@ -75,6 +78,51 @@ st.markdown("""
 
 # API Configuration
 API_BASE_URL = "http://localhost:8000"
+
+# Global variable to track server process
+server_process = None
+
+def start_api_server():
+    """Start the FastAPI server in a separate thread."""
+    global server_process
+    
+    def run_server():
+        try:
+            # Change to the project directory
+            project_dir = Path(__file__).parent
+            os.chdir(project_dir)
+            
+            # Start the API server
+            server_process = subprocess.Popen([
+                sys.executable, "-m", "uvicorn", "src.main:app",
+                "--host", "0.0.0.0",
+                "--port", "8000",
+                "--reload",
+                "--loop", "asyncio"
+            ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            
+            # Wait for the process to complete (it won't unless stopped)
+            server_process.wait()
+            
+        except Exception as e:
+            st.error(f"Error starting API server: {e}")
+    
+    # Start server in a separate thread
+    server_thread = threading.Thread(target=run_server, daemon=True)
+    server_thread.start()
+    
+    # Wait a bit for the server to start
+    time.sleep(3)
+    
+    return server_process
+
+def stop_api_server():
+    """Stop the FastAPI server if it's running."""
+    global server_process
+    if server_process and server_process.poll() is None:
+        server_process.terminate()
+        server_process.wait()
+        server_process = None
 
 def check_api_connection():
     """Check if the FastAPI server is running."""
@@ -160,14 +208,48 @@ def main():
     
     # Check API connection
     if not check_api_connection():
-        st.error("❌ Cannot connect to JetKart API server. Please ensure the server is running on http://localhost:8000")
-        st.info("💡 Start the server with: `python src/main.py`")
-        return
-    
-    st.success("✅ Connected to JetKart API server")
+        st.warning("⚠️ Cannot connect to JetKart API server. Starting server automatically...")
+        
+        with st.spinner("Starting API server..."):
+            start_api_server()
+        
+        # Wait and check again
+        time.sleep(5)
+        if not check_api_connection():
+            st.error("❌ Failed to start API server automatically")
+            st.info("💡 Please start the server manually with: `python src/main.py`")
+            return
+        else:
+            st.success("✅ API server started successfully!")
+    else:
+        st.success("✅ Connected to JetKart API server")
     
     # Sidebar for navigation
     st.sidebar.title("Navigation")
+    
+    # Server status indicator
+    if check_api_connection():
+        st.sidebar.success("🟢 API Server: Running")
+    else:
+        st.sidebar.error("🔴 API Server: Stopped")
+    
+    # Server control buttons
+    col1, col2 = st.sidebar.columns(2)
+    with col1:
+        if st.button("🔄 Restart Server"):
+            stop_api_server()
+            time.sleep(2)
+            with st.spinner("Restarting server..."):
+                start_api_server()
+            st.rerun()
+    
+    with col2:
+        if st.button("⏹️ Stop Server"):
+            stop_api_server()
+            st.rerun()
+    
+    st.sidebar.markdown("---")
+    
     page = st.sidebar.selectbox(
         "Choose a page:",
         ["🏠 Dashboard", "🗄️ Vector Store", "📁 Data Ingestion", "🔍 Search", "📊 Analytics"]
@@ -498,4 +580,8 @@ def show_analytics():
         st.markdown(f"• {feature}")
 
 if __name__ == "__main__":
-    main() 
+    try:
+        main()
+    finally:
+        # Cleanup: stop the server when the app is closed
+        stop_api_server() 
