@@ -66,12 +66,53 @@ st.markdown("""
         text-align: center;
     }
     .search-result {
-        background-color: #ffffff;
+        background-color: #f8f9fa;
         border: 1px solid #e9ecef;
         border-radius: 10px;
         padding: 1.5rem;
         margin: 1rem 0;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        color: #2c3e50;
+    }
+    
+    .text-content {
+        color: #2c3e50 !important;
+        background-color: #f8f9fa !important;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .info-content {
+        background-color: #e3f2fd !important;
+        color: #1565c0 !important;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #bbdefb;
+    }
+    
+    .success-content {
+        background-color: #e8f5e8 !important;
+        color: #2e7d32 !important;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #c8e6c9;
+    }
+    
+    .warning-content {
+        background-color: #fff3e0 !important;
+        color: #ef6c00 !important;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #ffcc02;
+    }
+    
+    .error-content {
+        background-color: #ffebee !important;
+        color: #c62828 !important;
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #ffcdd2;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -216,13 +257,13 @@ def main():
         # Wait and check again
         time.sleep(5)
         if not check_api_connection():
-            st.error("❌ Failed to start API server automatically")
-            st.info("💡 Please start the server manually with: `python src/main.py`")
+            st.markdown('<div class="error-content">❌ Failed to start API server automatically</div>', unsafe_allow_html=True)
+            st.markdown('<div class="info-content">💡 Please start the server manually with: `python src/main.py`</div>', unsafe_allow_html=True)
             return
         else:
-            st.success("✅ API server started successfully!")
+            st.markdown('<div class="success-content">✅ API server started successfully!</div>', unsafe_allow_html=True)
     else:
-        st.success("✅ Connected to JetKart API server")
+        st.markdown('<div class="success-content">✅ Connected to JetKart API server</div>', unsafe_allow_html=True)
     
     # Sidebar for navigation
     st.sidebar.title("Navigation")
@@ -274,25 +315,25 @@ def show_dashboard():
     
     with col1:
         st.markdown("""
-        <div class="metric-card">
-            <h3>🎯 Hybrid RAG</h3>
-            <p>Advanced retrieval with query classification, dynamic filtering, and LLM reranking</p>
+        <div class="text-content">
+            <h3 style="color: #2c3e50; text-align: center;">🎯 Hybrid RAG</h3>
+            <p style="color: #2c3e50; text-align: center;">Advanced retrieval with query classification, dynamic filtering, and LLM reranking</p>
         </div>
         """, unsafe_allow_html=True)
     
     with col2:
         st.markdown("""
-        <div class="metric-card">
-            <h3>🧠 LangGraph</h3>
-            <p>Sophisticated workflow orchestration with intelligent routing and processing</p>
+        <div class="text-content">
+            <h3 style="color: #2c3e50; text-align: center;">🧠 LangGraph</h3>
+            <p style="color: #2c3e50; text-align: center;">Sophisticated workflow orchestration with intelligent routing and processing</p>
         </div>
         """, unsafe_allow_html=True)
     
     with col3:
         st.markdown("""
-        <div class="metric-card">
-            <h3>🔍 Vector Search</h3>
-            <p>High-performance vector storage with Qdrant and Gemini embeddings</p>
+        <div class="text-content">
+            <h3 style="color: #2c3e50; text-align: center;">🔍 Vector Search</h3>
+            <p style="color: #2c3e50; text-align: center;">High-performance vector storage with Qdrant and Gemini embeddings</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -302,11 +343,13 @@ def show_dashboard():
     st.markdown('<h3>🚀 Quick Start Guide</h3>', unsafe_allow_html=True)
     
     st.markdown("""
+    <div class="text-content">
     1. **Create Vector Store**: Go to the Vector Store page to create a new collection
     2. **Ingest Data**: Use the Data Ingestion page to upload and process your files
     3. **Search**: Use the Search page to query your data with the LangGraph agent
     4. **Monitor**: Check Analytics to see system performance and usage
-    """)
+    </div>
+    """, unsafe_allow_html=True)
     
     # System status
     st.markdown('<h3>📊 System Status</h3>', unsafe_allow_html=True)
@@ -314,12 +357,12 @@ def show_dashboard():
     col1, col2 = st.columns(2)
     
     with col1:
-        st.success("✅ API Server: Running")
-        st.success("✅ Vector Store: Available")
+        st.markdown('<div class="success-content">✅ API Server: Running</div>', unsafe_allow_html=True)
+        st.markdown('<div class="success-content">✅ Vector Store: Available</div>', unsafe_allow_html=True)
     
     with col2:
-        st.info("ℹ️ LangGraph: Ready")
-        st.info("ℹ️ Embeddings: Gemini text-embedding-004")
+        st.markdown('<div class="info-content">ℹ️ LangGraph: Ready</div>', unsafe_allow_html=True)
+        st.markdown('<div class="info-content">ℹ️ Embeddings: Gemini text-embedding-004</div>', unsafe_allow_html=True)
 
 def show_vector_store():
     """Show vector store management."""
@@ -349,12 +392,12 @@ def show_vector_store():
                     result = create_collection(collection_name)
                     
                 if result.get("success"):
-                    st.success(f"✅ Collection '{collection_name}' created successfully!")
+                    st.markdown(f'<div class="success-content">✅ Collection \'{collection_name}\' created successfully!</div>', unsafe_allow_html=True)
                     st.json(result)
                 else:
-                    st.error(f"❌ Failed to create collection: {result.get('error', 'Unknown error')}")
+                    st.markdown(f'<div class="error-content">❌ Failed to create collection: {result.get("error", "Unknown error")}</div>', unsafe_allow_html=True)
             else:
-                st.error("Please enter a collection name")
+                st.markdown('<div class="error-content">Please enter a collection name</div>', unsafe_allow_html=True)
 
 def show_data_ingestion():
     """Show data ingestion interface."""
@@ -366,8 +409,8 @@ def show_data_ingestion():
     available_files = get_available_files()
     
     if not available_files:
-        st.warning("⚠️ No files found in the data directory. Please add files to the 'data' folder.")
-        st.info("Supported formats: JSON, Markdown (.md), Text (.txt)")
+        st.markdown('<div class="warning-content">⚠️ No files found in the data directory. Please add files to the \'data\' folder.</div>', unsafe_allow_html=True)
+        st.markdown('<div class="info-content">Supported formats: JSON, Markdown (.md), Text (.txt)</div>', unsafe_allow_html=True)
         return
     
     # File selection interface
@@ -378,7 +421,7 @@ def show_data_ingestion():
     )
     
     if selected_file:
-        st.info(f"Selected: {selected_file['name']} ({selected_file['type']})")
+        st.markdown(f'<div class="info-content">Selected: {selected_file["name"]} ({selected_file["type"]})</div>', unsafe_allow_html=True)
         
         # Collection selection
         collection_name = st.text_input(
@@ -410,19 +453,19 @@ def show_data_ingestion():
                     )
                 
                 if result.get("success"):
-                    st.success(f"✅ Successfully ingested {result.get('documents_processed', 0)} documents!")
+                    st.markdown(f'<div class="success-content">✅ Successfully ingested {result.get("documents_processed", 0)} documents!</div>', unsafe_allow_html=True)
                     st.json(result)
                 else:
-                    st.error(f"❌ Ingestion failed: {result.get('error', 'Unknown error')}")
+                    st.markdown(f'<div class="error-content">❌ Ingestion failed: {result.get("error", "Unknown error")}</div>', unsafe_allow_html=True)
             else:
-                st.error("Please enter a collection name")
+                st.markdown('<div class="error-content">Please enter a collection name</div>', unsafe_allow_html=True)
 
 def show_search():
     """Show search interface."""
     st.markdown('<h2 class="sub-header">🔍 LangGraph Search</h2>', unsafe_allow_html=True)
     
     st.markdown("""
-    <div class="info-box">
+    <div class="info-content">
         <strong>💡 Search Capabilities:</strong><br>
         • <strong>Flight Queries:</strong> "Emirates business class flights to Dubai under $2000"<br>
         • <strong>Information Queries:</strong> "What are the refund policies for cancelled flights?"<br>
@@ -460,7 +503,7 @@ def show_search():
                 search_time = time.time() - start_time
             
             if result.get("success"):
-                st.success("✅ Search completed successfully!")
+                st.markdown('<div class="success-content">✅ Search completed successfully!</div>', unsafe_allow_html=True)
                 
                 # Display results
                 st.markdown('<div class="search-result">', unsafe_allow_html=True)
@@ -477,7 +520,7 @@ def show_search():
                             st.markdown("**🔧 Applied Filters:**")
                             st.json(result.get("filters_applied"))
                         elif show_filters:
-                            st.info("No filters were applied to this query")
+                            st.markdown('<div class="info-content">No filters were applied to this query</div>', unsafe_allow_html=True)
                     
                     with col2:
                         if show_metrics:
@@ -494,9 +537,9 @@ def show_search():
                 with st.expander("🔍 View Full Response"):
                     st.json(result)
             else:
-                st.error(f"❌ Search failed: {result.get('error', 'Unknown error')}")
+                st.markdown(f'<div class="error-content">❌ Search failed: {result.get("error", "Unknown error")}</div>', unsafe_allow_html=True)
         else:
-            st.error("Please enter both a query and collection name")
+            st.markdown('<div class="error-content">Please enter both a query and collection name</div>', unsafe_allow_html=True)
 
 def show_analytics():
     """Show analytics and system information."""
@@ -509,35 +552,35 @@ def show_analytics():
     
     with col1:
         st.markdown("""
-        <div class="metric-card">
-            <h4>🔧 API Status</h4>
-            <p>✅ Running</p>
-            <p>Port: 8000</p>
+        <div class="text-content">
+            <h4 style="color: #2c3e50; text-align: center;">🔧 API Status</h4>
+            <p style="color: #2c3e50; text-align: center;">✅ Running</p>
+            <p style="color: #2c3e50; text-align: center;">Port: 8000</p>
         </div>
         """, unsafe_allow_html=True)
         
         st.markdown("""
-        <div class="metric-card">
-            <h4>🧠 LangGraph</h4>
-            <p>✅ Active</p>
-            <p>Workflow: Hybrid RAG</p>
+        <div class="text-content">
+            <h4 style="color: #2c3e50; text-align: center;">🧠 LangGraph</h4>
+            <p style="color: #2c3e50; text-align: center;">✅ Active</p>
+            <p style="color: #2c3e50; text-align: center;">Workflow: Hybrid RAG</p>
         </div>
         """, unsafe_allow_html=True)
     
     with col2:
         st.markdown("""
-        <div class="metric-card">
-            <h4>🗄️ Vector Store</h4>
-            <p>✅ Qdrant</p>
-            <p>Embeddings: Gemini</p>
+        <div class="text-content">
+            <h4 style="color: #2c3e50; text-align: center;">🗄️ Vector Store</h4>
+            <p style="color: #2c3e50; text-align: center;">✅ Qdrant</p>
+            <p style="color: #2c3e50; text-align: center;">Embeddings: Gemini</p>
         </div>
         """, unsafe_allow_html=True)
         
         st.markdown("""
-        <div class="metric-card">
-            <h4>🔍 Search Engine</h4>
-            <p>✅ Hybrid</p>
-            <p>Dense + Sparse</p>
+        <div class="text-content">
+            <h4 style="color: #2c3e50; text-align: center;">🔍 Search Engine</h4>
+            <p style="color: #2c3e50; text-align: center;">✅ Hybrid</p>
+            <p style="color: #2c3e50; text-align: center;">Dense + Sparse</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -576,8 +619,10 @@ def show_analytics():
         "🛡️ **Robust Fallbacks**: Multiple fallback strategies ensure reliability"
     ]
     
+    st.markdown('<div class="text-content">', unsafe_allow_html=True)
     for feature in features:
         st.markdown(f"• {feature}")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 if __name__ == "__main__":
     try:
