@@ -1,0 +1,29 @@
+JetKart Flight Information System
+
+Welcome to JetKart, your comprehensive flight booking and information platform.
+
+Flight Search Features:
+- Search flights by destination and departure city
+- Filter by airline, price range, and travel class
+- View detailed flight information including layovers
+- Compare prices across different airlines
+
+Booking Information:
+- Real-time availability checking
+- Secure payment processing
+- Instant booking confirmation
+- Flexible cancellation policies
+
+Customer Support:
+- 24/7 customer service
+- Multi-language support
+- Live chat assistance
+- Email support for complex queries
+
+Travel Tips:
+- Book flights at least 2 weeks in advance for better prices
+- Consider flexible dates for cost savings
+- Check baggage policies before booking
+- Review airline cancellation policies
+
+This is a sample text file to test the text file ingestion functionality in the JetKart system. The content will be chunked and stored in the vector database for semantic search capabilities. 
