@@ -304,3 +304,5 @@ The system provides comprehensive logging in the `logs/` directory. Check `logs/
 5. Submit a pull request
 
 **JetKart** - Intelligent Flight Search and Travel Information System
+
+<!-- Security scan triggered at 2025-10-08 08:50:21 -->
